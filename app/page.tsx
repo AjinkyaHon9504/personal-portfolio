@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { animate, createScope, onScroll, stagger, type Scope } from 'animejs'
@@ -273,9 +274,13 @@ export default function Home() {
                   transformOrigin: 'center center',
                 }}
               >
-                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900 to-black transition-all duration-700 group-hover:grayscale">
-                  <span className="font-mono text-6xl md:text-8xl font-bold text-white/90">AH</span>
-                </div>
+                <Image
+                  src="/images/ajinkya-hero.webp"
+                  alt="Ajinkya Hon"
+                  fill
+                  className="object-cover transition-all duration-700 group-hover:grayscale"
+                  priority
+                />
               </div>
             </div>
 
@@ -462,7 +467,6 @@ export default function Home() {
               <VideoTile
                 publicId={ANIMATED_3D_VIDEO}
                 label="3D Animated Reel"
-                posterOverride="/portfolio/3d-animated-poster.webp"
                 aspectClassName="aspect-[3/4]"
                 onOpen={openVideo}
               />
