@@ -8,8 +8,8 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Jessin Sam S - Portfolio',
-  description: 'Developer & Creative - Check jess.vc for more',
+  title: 'Ajinkya Hon - Video Editor & Visual Media Specialist',
+  description: 'Video editor and visual media specialist based in Pune, crafting short-form content, event aftermovies, and artist campaigns.',
   generator: 'v0.app',
   icons: {
     icon: [

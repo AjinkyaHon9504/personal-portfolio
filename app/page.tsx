@@ -3,11 +3,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
-import { animate, createScope, stagger, type Scope } from 'animejs'
+import { animate, createScope, onScroll, stagger, type Scope } from 'animejs'
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0)
-  const [hackText, setHackText] = useState('Jessin Sam S')
+  const [hackText, setHackText] = useState('Ajinkya Hon')
   const [isHacking, setIsHacking] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
@@ -18,6 +18,7 @@ export default function Home() {
 
   const navRef = useRef<HTMLElement>(null)
   const taglineRef = useRef<HTMLDivElement>(null)
+  const experienceRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     startHackEffect()
@@ -50,6 +51,28 @@ export default function Home() {
     return () => scope.revert()
   }, [])
 
+  useEffect(() => {
+    const scope: Scope = createScope().add(() => {
+      const experienceEl = experienceRef.current
+      if (experienceEl) {
+        const columns = experienceEl.querySelectorAll('.exp-column')
+        columns.forEach((column, columnIndex) => {
+          const items = column.querySelectorAll('.exp-item')
+          animate(items, {
+            opacity: [0, 1],
+            translateY: [24, 0],
+            delay: stagger(70, { start: columnIndex * 120 }),
+            duration: 600,
+            ease: 'outQuad',
+            autoplay: onScroll({ target: experienceEl, enter: 'bottom-=80 top' }),
+          })
+        })
+      }
+    })
+
+    return () => scope.revert()
+  }, [])
+
   const pulseOnHover = (event: React.MouseEvent<HTMLElement>) => {
     animate(event.currentTarget, {
       scale: [1, 1.12, 1],
@@ -72,7 +95,7 @@ export default function Home() {
     if (isHacking) return
     setIsHacking(true)
     
-    const originalText = 'Jessin Sam S'
+    const originalText = 'Ajinkya Hon'
     const chars = '01!@#$%^&*(){}[]<>?/\\|~`abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
     let iterations = 0
     
@@ -102,7 +125,7 @@ export default function Home() {
 
   const resetText = () => {
     if (!isHacking) {
-      setHackText('Jessin Sam S')
+      setHackText('Ajinkya Hon')
     }
   }
 
@@ -189,8 +212,8 @@ export default function Home() {
                 }}
               >
                 <Image
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Visual%20Scripting%20IDE%20Output%20%281%29-l8A3fJfsWbDnLzHYLWdzpC9XtzMtJH.png"
-                  alt="Jessin Sam S"
+                  src="/placeholder-user.jpg"
+                  alt="Ajinkya Hon"
                   fill
                   className="object-cover transition-all duration-700 group-hover:grayscale"
                   priority
@@ -229,6 +252,14 @@ export default function Home() {
                   <span className={`absolute bottom-0 left-0 w-0 h-0.5 ${isInContactSection ? 'bg-white' : 'bg-foreground'} transition-all duration-300 group-hover/link:w-full`}></span>
                 </Link>
                 <Link
+                  href="#experience"
+                  onClick={(e) => handleNavClick(e, '#experience')}
+                  className={`nav-link text-lg md:text-2xl font-bold ${navTextColor} hover:opacity-60 transition-all relative group/link pointer-events-auto`}
+                >
+                  Experience
+                  <span className={`absolute bottom-0 left-0 w-0 h-0.5 ${isInContactSection ? 'bg-white' : 'bg-foreground'} transition-all duration-300 group-hover/link:w-full`}></span>
+                </Link>
+                <Link
                   href="#services"
                   onClick={(e) => handleNavClick(e, '#services')}
                   className={`nav-link text-lg md:text-2xl font-bold ${navTextColor} hover:opacity-60 transition-all relative group/link pointer-events-auto`}
@@ -260,22 +291,13 @@ export default function Home() {
                 
                 <div ref={taglineRef} className="space-y-1 md:space-y-2 mb-6 md:mb-12">
                   <p className="text-base md:text-xl text-muted-foreground">
-                    Developer & Creative
+                    Video Editor & Visual Media Specialist
                   </p>
                   <p className="text-sm md:text-lg text-muted-foreground font-semibold">
-                    v0 Ambassador
+                    3+ Years Crafting Visual Stories
                   </p>
                   <p className="text-sm md:text-lg text-muted-foreground">
-                    Check{' '}
-                    <Link 
-                      href="https://jess.vc" 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-foreground font-medium underline hover:text-muted-foreground transition-colors"
-                    >
-                      jess.vc
-                    </Link>
-                    {' '}for more about me
+                    Based in Pune, Maharashtra
                   </p>
                 </div>
 
@@ -314,13 +336,13 @@ export default function Home() {
               >
                 <div className="space-y-2 md:space-y-6">
                   <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-black leading-tight">
-                    JESSIN SAM S
+                    AJINKYA HON
                   </h2>
                   <p className="text-base sm:text-xl md:text-2xl font-bold text-black tracking-wide">
-                    FOUNDER & CREATOR
+                    VIDEO EDITOR & VISUAL STORYTELLER
                   </p>
                   <p className="text-xs md:text-base lg:text-lg text-gray-700 leading-relaxed">
-                    Passionate about AI innovation and creative technology. With a background in computer vision and design, I'm committed to building tools that bridge the gap between imagination and creation.
+                    Over the last three years, I've worked across artist management agencies, brands, college festivals, and digital platforms to create engaging visual content that drives audience engagement and brand visibility — from artist promotions and concert coverage to large-scale festival campaigns and social media content production.
                   </p>
                 </div>
               </div>
@@ -434,6 +456,54 @@ export default function Home() {
         </div>
       </section>
 
+      <section id="experience" className="bg-white px-6 md:px-12 lg:px-20 py-20 border-t border-gray-100">
+        <div ref={experienceRef} className="max-w-[1600px] mx-auto">
+          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-16 md:mb-20 text-black">
+            Experience
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-16">
+            <div className="exp-column">
+              <h3 className="text-sm uppercase tracking-wider text-gray-400 mb-4 md:mb-6">
+                Clients & Brands
+              </h3>
+              <ul className="space-y-3">
+                <li className="exp-item text-lg md:text-xl font-semibold text-black">Cosa Nostra</li>
+                <li className="exp-item text-lg md:text-xl font-semibold text-black">TribeVibe</li>
+                <li className="exp-item text-lg md:text-xl font-semibold text-black">Fitspire</li>
+                <li className="exp-item text-lg md:text-xl font-semibold text-black">Multiple YouTube Channels</li>
+              </ul>
+            </div>
+
+            <div className="exp-column">
+              <h3 className="text-sm uppercase tracking-wider text-gray-400 mb-4 md:mb-6">
+                Festivals & Events Covered
+              </h3>
+              <ul className="space-y-3">
+                <li className="exp-item text-lg md:text-xl font-semibold text-black">Saturnalia</li>
+                <li className="exp-item text-lg md:text-xl font-semibold text-black">Retina — AIIMS Bhopal</li>
+                <li className="exp-item text-lg md:text-xl font-semibold text-black">Plinth — LNMIIT Tech Fest</li>
+                <li className="exp-item text-lg md:text-xl font-semibold text-black">Cogni — IIT Roorkee</li>
+              </ul>
+            </div>
+
+            <div className="exp-column">
+              <h3 className="text-sm uppercase tracking-wider text-gray-400 mb-4 md:mb-6">
+                Artist Collaborations
+              </h3>
+              <ul className="space-y-3">
+                <li className="exp-item text-lg md:text-xl font-semibold text-black">Seedhe Maut</li>
+                <li className="exp-item text-lg md:text-xl font-semibold text-black">Amaal Mallik</li>
+                <li className="exp-item text-lg md:text-xl font-semibold text-black">Aditya Rikhari</li>
+                <li className="exp-item text-lg md:text-xl font-semibold text-black">Naalayak</li>
+                <li className="exp-item text-lg md:text-xl font-semibold text-black">Shalmali Kholgade</li>
+                <li className="exp-item text-lg md:text-xl font-semibold text-black">Bismil</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="services" className="min-h-screen bg-white px-6 md:px-12 lg:px-20 py-20">
         <div className="max-w-[1600px] mx-auto">
           <h2 
@@ -459,10 +529,10 @@ export default function Home() {
                 01
               </div>
               <h3 className="text-2xl md:text-3xl font-bold text-black">
-                AI Solutions
+                Short-Form Video Editing
               </h3>
               <p className="text-base md:text-lg text-gray-600 leading-relaxed">
-                Custom AI and machine learning solutions tailored to your business needs. From computer vision to natural language processing.
+                Instagram Reels and YouTube Shorts crafted for maximum engagement, retention, and platform-native pacing.
               </p>
             </div>
 
@@ -478,10 +548,10 @@ export default function Home() {
                 02
               </div>
               <h3 className="text-2xl md:text-3xl font-bold text-black">
-                Creative Development
+                Event Aftermovies
               </h3>
               <p className="text-base md:text-lg text-gray-600 leading-relaxed">
-                Building interactive and engaging digital experiences with modern web technologies and creative coding.
+                Cinematic recaps of festivals, concerts, and college fests that capture the full energy of the moment.
               </p>
             </div>
 
@@ -497,10 +567,10 @@ export default function Home() {
                 03
               </div>
               <h3 className="text-2xl md:text-3xl font-bold text-black">
-                Design & Strategy
+                Concert & Artist Content
               </h3>
               <p className="text-base md:text-lg text-gray-600 leading-relaxed">
-                Strategic design thinking combined with technical expertise to create impactful digital products.
+                On-ground coverage and edits for live performances, artist promotions, and tour content.
               </p>
             </div>
 
@@ -516,10 +586,10 @@ export default function Home() {
                 04
               </div>
               <h3 className="text-2xl md:text-3xl font-bold text-black">
-                Consulting
+                Motion Graphics
               </h3>
               <p className="text-base md:text-lg text-gray-600 leading-relaxed">
-                Technology consulting and advisory services to help guide your digital transformation journey.
+                Custom animated elements, titles, and graphics that elevate every edit.
               </p>
             </div>
 
@@ -535,10 +605,10 @@ export default function Home() {
                 05
               </div>
               <h3 className="text-2xl md:text-3xl font-bold text-black">
-                Prototyping
+                Brand Campaign Edits
               </h3>
               <p className="text-base md:text-lg text-gray-600 leading-relaxed">
-                Rapid prototyping and proof of concept development to validate ideas quickly and efficiently.
+                Promotional videos built around brand storytelling that drives audience engagement.
               </p>
             </div>
 
@@ -554,10 +624,10 @@ export default function Home() {
                 06
               </div>
               <h3 className="text-2xl md:text-3xl font-bold text-black">
-                Full-Stack Development
+                Social Media Content Strategy
               </h3>
               <p className="text-base md:text-lg text-gray-600 leading-relaxed">
-                End-to-end web application development with modern frameworks and best practices.
+                Content planning and edits tailored to platform-specific algorithms and audience behavior.
               </p>
             </div>
 
@@ -572,10 +642,10 @@ export default function Home() {
                 07
               </div>
               <h3 className="text-2xl md:text-3xl font-bold text-black">
-                Photography
+                Promotional Videos
               </h3>
               <p className="text-base md:text-lg text-gray-600 leading-relaxed">
-                Professional photography services capturing moments with creative vision and technical precision.
+                High-impact edits for product launches, events, and marketing campaigns.
               </p>
             </div>
 
@@ -590,10 +660,10 @@ export default function Home() {
                 08
               </div>
               <h3 className="text-2xl md:text-3xl font-bold text-black">
-                Cinematography
+                Artist Reels
               </h3>
               <p className="text-base md:text-lg text-gray-600 leading-relaxed">
-                Creating compelling visual stories through expert cinematography and video production.
+                Collaborative content for musicians and performers, from teasers to full releases.
               </p>
             </div>
           </div>
@@ -713,26 +783,39 @@ export default function Home() {
           >
             <div className="space-y-2">
               <p className="text-gray-400 text-sm uppercase tracking-wider">Direct Contact</p>
-              <Link 
-                href="mailto:jessinpersonal@gmail.com"
-                className="text-xl md:text-2xl hover:text-gray-400 transition-colors"
+              <Link
+                href="mailto:ajinkyahon090504@gmail.com"
+                className="text-xl md:text-2xl hover:text-gray-400 transition-colors block"
               >
-                jessinpersonal@gmail.com
+                ajinkyahon090504@gmail.com
               </Link>
+              <Link
+                href="tel:+918530251177"
+                className="text-lg md:text-xl text-gray-400 hover:text-white transition-colors block"
+              >
+                +91 85302 51177
+              </Link>
+              <p className="text-lg md:text-xl text-gray-400">Pune, Maharashtra</p>
             </div>
             <div className="space-y-2">
               <p className="text-gray-400 text-sm uppercase tracking-wider">Follow</p>
               <div className="flex gap-6">
-                <Link 
-                  href="https://x.com/jessinvibe" 
-                  target="_blank" 
+                <Link
+                  href="https://www.instagram.com/honajinkya/"
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="text-xl hover:text-gray-400 transition-colors"
                 >
-                  X
+                  Instagram
                 </Link>
-                <Link href="#" className="text-xl hover:text-gray-400 transition-colors">GitHub</Link>
-                <Link href="#" className="text-xl hover:text-gray-400 transition-colors">LinkedIn</Link>
+                <Link
+                  href="https://www.linkedin.com/in/ajinkyahon/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xl hover:text-gray-400 transition-colors"
+                >
+                  LinkedIn
+                </Link>
               </div>
             </div>
           </div>
