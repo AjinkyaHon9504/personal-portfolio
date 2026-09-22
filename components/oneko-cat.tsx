@@ -258,7 +258,7 @@ export function OnekoCat() {
         backgroundImage: 'url(/cat/oneko.gif)',
         imageRendering: 'pixelated',
         pointerEvents: 'none',
-        zIndex: 2147483647,
+        zIndex: 60,
       }}
     />
   )

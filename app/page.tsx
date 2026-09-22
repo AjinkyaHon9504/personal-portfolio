@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { animate, createScope, onScroll, stagger, type Scope } from 'animejs'
@@ -45,10 +44,6 @@ export default function Home() {
   const [lightbox, setLightbox] = useState<{ publicId: string; label: string } | null>(null)
   const openVideo = (publicId: string, label: string) => setLightbox({ publicId, label })
   const closeVideo = () => setLightbox(null)
-
-  useEffect(() => {
-    startHackEffect()
-  }, [])
 
   useEffect(() => {
     const scope: Scope = createScope().add(() => {
@@ -278,13 +273,9 @@ export default function Home() {
                   transformOrigin: 'center center',
                 }}
               >
-                <Image
-                  src="/placeholder-user.jpg"
-                  alt="Ajinkya Hon"
-                  fill
-                  className="object-cover transition-all duration-700 group-hover:grayscale"
-                  priority
-                />
+                <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-gray-900 to-black transition-all duration-700 group-hover:grayscale">
+                  <span className="font-mono text-6xl md:text-8xl font-bold text-white/90">AH</span>
+                </div>
               </div>
             </div>
 
@@ -481,7 +472,7 @@ export default function Home() {
       </section>
 
       <section id="experience" className="bg-white px-6 md:px-12 lg:px-20 py-20 border-t border-gray-100">
-        <div ref={experienceRef} className="max-w-[1600px] mx-auto">
+        <div ref={experienceRef} className="max-w-[1300px] mx-auto">
           <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-16 md:mb-20 text-black">
             Experience
           </h2>
@@ -529,7 +520,7 @@ export default function Home() {
       </section>
 
       <section id="services" className="min-h-screen bg-white px-6 md:px-12 lg:px-20 py-20">
-        <div className="max-w-[1600px] mx-auto">
+        <div className="max-w-[1300px] mx-auto">
           <h2 
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-16 md:mb-24 text-black text-center"
             style={{
