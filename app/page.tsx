@@ -4,6 +4,25 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { animate, createScope, onScroll, stagger, type Scope } from 'animejs'
+import { VideoTile } from '@/components/video-tile'
+import { VideoLightbox } from '@/components/video-lightbox'
+
+const ARTIST_VIDEOS = [
+  'SaveInta.com_AQMsPd1G-4XEx6uw0H1ZHTYTEmhsdl8xOmfHGMry6ydQ4axbZONmJairjLUghmD5_23JuRYy4I30YdZUSYoR_AsBSzqnDIvdrgg6sOQ',
+  'SaveInta.com_AQNfi6fGDEisQ0006z8njCGvVQ0t6BkMXvE2ZrGicjTEonqgy7MxzrCmJYsJfU_y5bThGGd0bYqUvMBt3GG1ggAg3shlZpoxxQN42mM',
+  'SaveInta.com_AQO5LrD6KN7LIw9wzKCsKokVcGtUah61tX-DV5rX6PcGudi7E-pO3KvGYSD_uck0Dakh2UzW4FuOmiSW1rHhgecvn3C_NYgIJ9gUYqo',
+  'SaveInta.com_AQMtXPLEUFw87ov8Ei3LWO3rYsjayrXP2d4t1DDMD4LqXz1psTcb_aXs_0GfTH4OXcH0psU9trkd85vXf6IcRSu3w_F4yXcng1AHQXQ',
+  'SaveInta.com_AQOQ1CP5hLH6OzjOSJhNRJShgalWaRihTVCcOzOsi7pkHpE-fP4rhQs9_opKuplvt0MDo73PmZspXabZna9aLyr0VD4EGY5Eel5sBqA',
+  'SaveInta.com_AQN-5-b3CDCABNAt4y7THTdXsSj0Jcrymv_x2kbxaiNM_Gdy_F6JR4c9gqqE7YxHGW_WuS5fngNBlOWWr8-6p649',
+  'SaveInta.com_AQM8X_c777mBtiLfnVUYTdhBQ6IrussgIc2Ok6iOa9mrCSa-Uydpr4MoQiowZmumJ34E6mrI4rF3csCZH3FSsf08cBDInLdlek-FzyA',
+]
+
+const AFTERMOVIE_VIDEOS = [
+  'SaveInta.com_AQMOaPK2BSZh8d6PEVoIpWlvKvlyYU0pVBHMDaJO1uwHV4VvfkrVRxtDF_FeIl-Jqw3Xjo7UMl2pkbjPrxjpDVCzCNkPNvAWzVVsL4E',
+  'SaveInta.com_AQMRo5ibkgYkx1sjMM-s03Q4cO0t_KUDYuKxB1Qq3Luk7yPy-32VBEj-9iaRnLonVkzvOk8JRBzcWMN4qJqMliXHhKHDIbxxo4uBj6c',
+]
+
+const ANIMATED_3D_VIDEO = 'SaveInta.com_AQPEt1fogonCouOMR1P9XZEC9UzqWsr-siGZw7Cp1Pv42Unkzz6QAnGRqH6ZBwiq3Ab0AX1ez8bNy6MCAIYPwyv-r_bJ7SFIFP0HMPA'
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0)
@@ -19,6 +38,13 @@ export default function Home() {
   const navRef = useRef<HTMLElement>(null)
   const taglineRef = useRef<HTMLDivElement>(null)
   const experienceRef = useRef<HTMLDivElement>(null)
+  const artistGridRef = useRef<HTMLDivElement>(null)
+  const aftermovieGridRef = useRef<HTMLDivElement>(null)
+  const animated3dRef = useRef<HTMLDivElement>(null)
+
+  const [lightbox, setLightbox] = useState<{ publicId: string; label: string } | null>(null)
+  const openVideo = (publicId: string, label: string) => setLightbox({ publicId, label })
+  const closeVideo = () => setLightbox(null)
 
   useEffect(() => {
     startHackEffect()
@@ -66,6 +92,47 @@ export default function Home() {
             ease: 'outQuad',
             autoplay: onScroll({ target: experienceEl, enter: 'bottom-=80 top' }),
           })
+        })
+      }
+    })
+
+    return () => scope.revert()
+  }, [])
+
+  useEffect(() => {
+    const scope: Scope = createScope().add(() => {
+      const artistGrid = artistGridRef.current
+      if (artistGrid) {
+        animate(artistGrid.querySelectorAll('.portfolio-tile'), {
+          opacity: [0, 1],
+          translateY: [40, 0],
+          delay: stagger(80),
+          duration: 700,
+          ease: 'outQuad',
+          autoplay: onScroll({ target: artistGrid, enter: 'bottom-=60 top' }),
+        })
+      }
+
+      const aftermovieGrid = aftermovieGridRef.current
+      if (aftermovieGrid) {
+        animate(aftermovieGrid.querySelectorAll('.portfolio-tile'), {
+          clipPath: ['inset(0 100% 0 0)', 'inset(0 0% 0 0)'],
+          delay: stagger(150),
+          duration: 900,
+          ease: 'outQuart',
+          autoplay: onScroll({ target: aftermovieGrid, enter: 'bottom-=60 top' }),
+        })
+      }
+
+      const animated3d = animated3dRef.current
+      if (animated3d) {
+        animate(animated3d, {
+          opacity: [0, 1],
+          scale: [0.85, 1],
+          rotate: [-2, 0],
+          duration: 800,
+          ease: 'outBack',
+          autoplay: onScroll({ target: animated3d, enter: 'bottom-=60 top' }),
         })
       }
     })
@@ -351,106 +418,63 @@ export default function Home() {
         </div>
       </div>
 
-      <section 
-        id="portfolio" 
-        className="min-h-screen bg-white py-12 md:py-16 lg:py-20 px-6 md:px-12 lg:px-16"
+      <section
+        id="portfolio"
+        className="bg-white py-12 md:py-16 lg:py-20 px-6 md:px-12 lg:px-16"
       >
         <div className="max-w-7xl mx-auto">
-          <div 
-            className="transition-all duration-700"
-            style={{
-              opacity: Math.min(1, Math.max(0, (scrollY - 600) / 200)),
-              transform: `translateY(${Math.max(0, 40 - (scrollY - 600) / 10)}px)`,
-            }}
-          >
-            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-black mb-12 md:mb-16 lg:mb-20">
-              Portfolio
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 md:gap-8 lg:gap-10">
-              <div 
-                className="lg:col-span-4 group overflow-hidden bg-gray-50"
-                style={{
-                  opacity: Math.min(1, Math.max(0, (scrollY - 700) / 200)),
-                  transform: `translateX(${Math.max(-100, -100 + (scrollY - 700) / 2)}px)`
-                }}
-              >
-                <div className="relative aspect-[3/4] w-full">
-                  <Image
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-11-15%20at%209.57.51%E2%80%AFPM-30RoVgu1YHSjMjubToxrKsVnPIzmge.png"
-                    alt="Portfolio work 1"
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105 group-hover:rotate-2"
-                  />
-                </div>
-              </div>
+          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-black mb-12 md:mb-16 lg:mb-20">
+            Portfolio
+          </h2>
 
-              <div 
-                className="lg:col-span-4 group overflow-hidden bg-gray-50"
-                style={{
-                  opacity: Math.min(1, Math.max(0, (scrollY - 800) / 200)),
-                  transform: `translateX(${Math.min(100, 100 - (scrollY - 800) / 2)}px)`
-                }}
-              >
-                <div className="relative aspect-[3/4] w-full">
-                  <Image
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-11-15%20at%209.55.59%E2%80%AFPM-iLb69SPFV4BKmv3VTkytexJnUXKl9Z.png"
-                    alt="Portfolio work 2"
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105 group-hover:rotate-2"
-                  />
-                </div>
-              </div>
+          <div className="mb-16 md:mb-20">
+            <h3 className="text-sm uppercase tracking-wider text-gray-400 mb-6 md:mb-8">
+              Artist Content
+            </h3>
+            <div ref={artistGridRef} className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              {ARTIST_VIDEOS.map((publicId, index) => (
+                <VideoTile
+                  key={publicId}
+                  publicId={publicId}
+                  label={`Artist Reel ${String(index + 1).padStart(2, '0')}`}
+                  aspectClassName="aspect-[3/4]"
+                  className="portfolio-tile"
+                  onOpen={openVideo}
+                />
+              ))}
+            </div>
+          </div>
 
-              <div 
-                className="lg:col-span-4 group overflow-hidden bg-gray-50"
-                style={{
-                  opacity: Math.min(1, Math.max(0.7, 0.7 + (scrollY - 900) / 800)),
-                  transform: `scale(${Math.min(1, Math.max(0.7, 0.7 + (scrollY - 900) / 800))})`
-                }}
-              >
-                <div className="relative aspect-[3/4] w-full">
-                  <Image
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-11-15%20at%209.57.01%E2%80%AFPM-Ghs4tqhCtJiGFMz1lXfOdXPEwwpnj8.png"
-                    alt="Portfolio work 3"
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105 group-hover:rotate-2"
-                  />
-                </div>
-              </div>
+          <div className="mb-16 md:mb-20">
+            <h3 className="text-sm uppercase tracking-wider text-gray-400 mb-6 md:mb-8">
+              Aftermovies
+            </h3>
+            <div ref={aftermovieGridRef} className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              {AFTERMOVIE_VIDEOS.map((publicId, index) => (
+                <VideoTile
+                  key={publicId}
+                  publicId={publicId}
+                  label={`Event Aftermovie ${String(index + 1).padStart(2, '0')}`}
+                  aspectClassName="aspect-video"
+                  className="portfolio-tile"
+                  onOpen={openVideo}
+                />
+              ))}
+            </div>
+          </div>
 
-              <div 
-                className="lg:col-span-5 group overflow-hidden bg-gray-50"
-                style={{
-                  opacity: Math.min(1, Math.max(0, (scrollY - 1000) / 200)),
-                  transform: `translate(${Math.max(-50, -50 + (scrollY - 1000) / 4)}px, ${Math.max(0, 80 - (scrollY - 1000) / 6)}px) rotate(${Math.max(-5, -5 + (scrollY - 1000) / 40)}deg)`
-                }}
-              >
-                <div className="relative aspect-[3/5] w-full">
-                  <Image
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-11-15%20at%209.58.08%E2%80%AFPM-pv8q57g8BCkVDYjHA5hUFZGkUzRcuV.png"
-                    alt="Portfolio work 4"
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                </div>
-              </div>
-
-              <div 
-                className="lg:col-span-7 group overflow-hidden bg-gray-50"
-                style={{
-                  opacity: Math.min(1, Math.max(0, (scrollY - 1100) / 200)),
-                  transform: `translateX(${Math.min(100, 100 - (scrollY - 1100) / 2)}px) rotate(${Math.min(3, 3 - (scrollY - 1100) / 70)}deg)`
-                }}
-              >
-                <div className="relative aspect-[4/5] w-full">
-                  <Image
-                    src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Screenshot%202025-11-15%20at%209.56.17%E2%80%AFPM-P7lUEuO4Pm6Iyei2QF8carfOSUGlOb.png"
-                    alt="Portfolio work 5"
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                </div>
-              </div>
+          <div>
+            <h3 className="text-sm uppercase tracking-wider text-gray-400 mb-6 md:mb-8">
+              3D Animated
+            </h3>
+            <div ref={animated3dRef} className="max-w-2xl">
+              <VideoTile
+                publicId={ANIMATED_3D_VIDEO}
+                label="3D Animated Reel"
+                posterOverride="/portfolio/3d-animated-poster.webp"
+                aspectClassName="aspect-[3/4]"
+                onOpen={openVideo}
+              />
             </div>
           </div>
         </div>
@@ -821,6 +845,12 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <VideoLightbox
+        publicId={lightbox?.publicId ?? null}
+        label={lightbox?.label ?? ''}
+        onClose={closeVideo}
+      />
     </main>
   )
 }
