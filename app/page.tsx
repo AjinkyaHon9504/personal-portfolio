@@ -2,7 +2,8 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { animate, createScope, stagger, type Scope } from 'animejs'
 
 export default function Home() {
   const [scrollY, setScrollY] = useState(0)
@@ -15,9 +16,47 @@ export default function Home() {
   })
   const [showScrollTop, setShowScrollTop] = useState(false)
 
+  const navRef = useRef<HTMLElement>(null)
+  const taglineRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     startHackEffect()
   }, [])
+
+  useEffect(() => {
+    const scope: Scope = createScope().add(() => {
+      const navLinks = navRef.current?.querySelectorAll('.nav-link')
+      if (navLinks && navLinks.length) {
+        animate(navLinks, {
+          opacity: [0, 1],
+          translateY: [-16, 0],
+          delay: stagger(90, { start: 200 }),
+          duration: 600,
+          ease: 'outQuad',
+        })
+      }
+
+      if (taglineRef.current) {
+        animate(taglineRef.current.children, {
+          opacity: [0, 1],
+          translateX: [-24, 0],
+          delay: stagger(120, { start: 450 }),
+          duration: 700,
+          ease: 'outQuad',
+        })
+      }
+    })
+
+    return () => scope.revert()
+  }, [])
+
+  const pulseOnHover = (event: React.MouseEvent<HTMLElement>) => {
+    animate(event.currentTarget, {
+      scale: [1, 1.12, 1],
+      duration: 500,
+      ease: 'outElastic(1, .6)',
+    })
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -116,6 +155,7 @@ export default function Home() {
     <main className="min-h-screen bg-white">
       <button
         onClick={scrollToTop}
+        onMouseEnter={pulseOnHover}
         className={`fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[9999] bg-black text-white p-3 md:p-4 rounded-full shadow-lg hover:bg-gray-800 transition-all duration-300 ${
           showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
         }`}
@@ -159,46 +199,47 @@ export default function Home() {
             </div>
 
             <div className="flex flex-col justify-between p-6 md:p-8 lg:p-16 relative">
-              <nav 
+              <nav
+                ref={navRef}
                 className="fixed top-4 md:top-8 right-4 md:right-8 lg:right-16 flex flex-col items-end gap-1 md:gap-4 z-[9999] transition-all duration-500 pointer-events-auto"
                 style={{ opacity: navOpacity }}
               >
-                <Link 
-                  href="#home" 
+                <Link
+                  href="#home"
                   onClick={(e) => handleNavClick(e, '#home')}
-                  className={`text-lg md:text-2xl font-bold ${navTextColor} hover:opacity-60 transition-all relative group/link pointer-events-auto`}
+                  className={`nav-link text-lg md:text-2xl font-bold ${navTextColor} hover:opacity-60 transition-all relative group/link pointer-events-auto`}
                 >
                   Home
                   <span className={`absolute bottom-0 left-0 w-0 h-0.5 ${isInContactSection ? 'bg-white' : 'bg-foreground'} transition-all duration-300 group-hover/link:w-full`}></span>
                 </Link>
-                <Link 
-                  href="#me" 
+                <Link
+                  href="#me"
                   onClick={(e) => handleNavClick(e, '#me')}
-                  className={`text-lg md:text-2xl font-bold ${navTextColor} hover:opacity-60 transition-all relative group/link pointer-events-auto`}
+                  className={`nav-link text-lg md:text-2xl font-bold ${navTextColor} hover:opacity-60 transition-all relative group/link pointer-events-auto`}
                 >
                   Me
                   <span className={`absolute bottom-0 left-0 w-0 h-0.5 ${isInContactSection ? 'bg-white' : 'bg-foreground'} transition-all duration-300 group-hover/link:w-full`}></span>
                 </Link>
-                <Link 
-                  href="#portfolio" 
+                <Link
+                  href="#portfolio"
                   onClick={(e) => handleNavClick(e, '#portfolio')}
-                  className={`text-lg md:text-2xl font-bold ${navTextColor} hover:opacity-60 transition-all relative group/link pointer-events-auto`}
+                  className={`nav-link text-lg md:text-2xl font-bold ${navTextColor} hover:opacity-60 transition-all relative group/link pointer-events-auto`}
                 >
                   Portfolio
                   <span className={`absolute bottom-0 left-0 w-0 h-0.5 ${isInContactSection ? 'bg-white' : 'bg-foreground'} transition-all duration-300 group-hover/link:w-full`}></span>
                 </Link>
-                <Link 
-                  href="#services" 
+                <Link
+                  href="#services"
                   onClick={(e) => handleNavClick(e, '#services')}
-                  className={`text-lg md:text-2xl font-bold ${navTextColor} hover:opacity-60 transition-all relative group/link pointer-events-auto`}
+                  className={`nav-link text-lg md:text-2xl font-bold ${navTextColor} hover:opacity-60 transition-all relative group/link pointer-events-auto`}
                 >
                   Services
                   <span className={`absolute bottom-0 left-0 w-0 h-0.5 ${isInContactSection ? 'bg-white' : 'bg-foreground'} transition-all duration-300 group-hover/link:w-full`}></span>
                 </Link>
-                <Link 
-                  href="#contact" 
+                <Link
+                  href="#contact"
                   onClick={(e) => handleNavClick(e, '#contact')}
-                  className={`text-lg md:text-2xl font-bold ${navTextColor} hover:opacity-60 transition-all relative group/link pointer-events-auto`}
+                  className={`nav-link text-lg md:text-2xl font-bold ${navTextColor} hover:opacity-60 transition-all relative group/link pointer-events-auto`}
                 >
                   Get in touch
                   <span className={`absolute bottom-0 left-0 w-0 h-0.5 ${isInContactSection ? 'bg-white' : 'bg-foreground'} transition-all duration-300 group-hover/link:w-full`}></span>
@@ -217,7 +258,7 @@ export default function Home() {
                   <span className="glitch-text" data-text={hackText}>{hackText}</span>
                 </h1>
                 
-                <div className="space-y-1 md:space-y-2 mb-6 md:mb-12">
+                <div ref={taglineRef} className="space-y-1 md:space-y-2 mb-6 md:mb-12">
                   <p className="text-base md:text-xl text-muted-foreground">
                     Developer & Creative
                   </p>
@@ -642,6 +683,7 @@ export default function Home() {
             <div className="pt-8">
               <button
                 type="submit"
+                onMouseEnter={pulseOnHover}
                 className="group relative inline-flex items-center gap-4 text-xl md:text-2xl font-bold bg-white text-black px-10 py-5 hover:bg-gray-200 transition-all duration-300 overflow-hidden"
               >
                 <span className="relative z-10 group-hover:text-black transition-colors duration-300">Send Message</span>
