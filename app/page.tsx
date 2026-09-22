@@ -435,6 +435,7 @@ export default function Home() {
                   label={`Artist Reel ${String(index + 1).padStart(2, '0')}`}
                   aspectClassName="aspect-[3/4]"
                   className="portfolio-tile"
+                  movementVariant={index}
                   onOpen={openVideo}
                 />
               ))}
@@ -453,6 +454,7 @@ export default function Home() {
                   label={`Event Aftermovie ${String(index + 1).padStart(2, '0')}`}
                   aspectClassName="aspect-video"
                   className="portfolio-tile"
+                  movementVariant={index + 2}
                   onOpen={openVideo}
                 />
               ))}
@@ -468,6 +470,7 @@ export default function Home() {
                 publicId={ANIMATED_3D_VIDEO}
                 label="3D Animated Reel"
                 aspectClassName="aspect-[3/4]"
+                movementVariant={0}
                 onOpen={openVideo}
               />
             </div>
